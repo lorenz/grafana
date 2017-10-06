@@ -20,6 +20,8 @@ import (
 
 	"github.com/grafana/grafana/pkg/log"
 	"github.com/grafana/grafana/pkg/util"
+
+	"github.com/mattn/go-xmpp"
 )
 
 type Scheme string
@@ -160,6 +162,10 @@ var (
 
 	// SMTP email settings
 	Smtp SmtpSettings
+
+	// XMPP settings
+	XMPPEnabled bool
+	XMPP xmpp.Options
 
 	// QUOTA
 	Quota QuotaSettings
@@ -599,6 +605,7 @@ func NewConfigContext(args *CommandLineArgs) error {
 
 	readSessionConfig()
 	readSmtpSettings()
+	readXMPPSettings()
 	readQuotaSettings()
 
 	if VerifyEmailEnabled && !Smtp.Enabled {
