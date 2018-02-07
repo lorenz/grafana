@@ -1,13 +1,13 @@
 package notifiers
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 
 	"github.com/grafana/grafana/pkg/log"
-	"github.com/grafana/grafana/pkg/setting"
 	m "github.com/grafana/grafana/pkg/models"
 	"github.com/grafana/grafana/pkg/services/alerting"
+	"github.com/grafana/grafana/pkg/setting"
 
 	"github.com/mattn/go-xmpp"
 )
@@ -37,8 +37,8 @@ func NewXMPPNotifier(model *m.AlertNotification) (alerting.Notifier, error) {
 	usersString := model.Settings.Get("users").MustString()
 	users := strings.FieldsFunc(usersString, func(r rune) bool {
 		switch r {
-			case ',', ';', '\n':
-				return true
+		case ',', ';', '\n':
+			return true
 		}
 		return false
 	})
@@ -46,8 +46,8 @@ func NewXMPPNotifier(model *m.AlertNotification) (alerting.Notifier, error) {
 	mucsString := model.Settings.Get("mucs").MustString()
 	mucs := strings.FieldsFunc(mucsString, func(r rune) bool {
 		switch r {
-			case ',', ';', '\n':
-				return true
+		case ',', ';', '\n':
+			return true
 		}
 		return false
 	})
@@ -62,11 +62,14 @@ func NewXMPPNotifier(model *m.AlertNotification) (alerting.Notifier, error) {
 
 type XMPPNotifier struct {
 	NotifierBase
-	Users      []string
-	MUCs       []string
-	log        log.Logger
+	Users []string
+	MUCs  []string
+	log   log.Logger
 }
 
+func (this *XMPPNotifier) ShouldNotify(context *alerting.EvalContext) bool {
+	return defaultShouldNotify(context)
+}
 func (this *XMPPNotifier) Notify(evalContext *alerting.EvalContext) error {
 	this.log.Info("Sending xmpp")
 
@@ -83,7 +86,7 @@ func (this *XMPPNotifier) Notify(evalContext *alerting.EvalContext) error {
 	msg := fmt.Sprintf("%s\n\n%s", evalContext.GetNotificationTitle(), evalContext.Rule.Message)
 
 	for _, muc := range this.MUCs {
-		client.JoinMUCNoHistory(muc,"")
+		client.JoinMUCNoHistory(muc, "")
 		client.SendHtml(xmpp.Chat{Remote: muc, Type: "groupchat", Text: msg})
 		client.LeaveMUC(muc)
 	}
@@ -104,7 +107,7 @@ func (this *XMPPNotifier) Notify(evalContext *alerting.EvalContext) error {
 	</message>`, evalContext.ImagePublicUrl, evalContext.ImagePublicUrl)
 
 	for _, muc := range this.MUCs {
-		client.JoinMUCNoHistory(muc,"")
+		client.JoinMUCNoHistory(muc, "")
 		client.SendOrg(fmt.Sprintf(msg, muc, "groupchat"))
 		client.LeaveMUC(muc)
 	}
