@@ -234,7 +234,12 @@ The maximum number of connections in the idle connection pool.
 ### max_open_conn
 The maximum number of open connections to the database.
 
+### conn_max_lifetime
+
+Sets the maximum amount of time a connection may be reused. The default is 14400 (which means 14400 seconds or 4 hours). For MySQL, this setting should be shorter than the [`wait_timeout`](https://dev.mysql.com/doc/refman/5.7/en/server-system-variables.html#sysvar_wait_timeout) variable.
+
 ### log_queries
+
 Set to `true` to log the sql calls and execution times.
 
 <hr />
@@ -296,7 +301,7 @@ options are `Admin` and `Editor`. e.g. :
 
 `auto_assign_org_role = Viewer`
 
-### viewers can edit
+### viewers_can_edit
 
 Viewers can edit/inspect dashboard settings in the browser. But not save the dashboard.
 Defaults to `false`.
@@ -354,7 +359,7 @@ enabled = true
 allow_sign_up = true
 client_id = YOUR_GITHUB_APP_CLIENT_ID
 client_secret = YOUR_GITHUB_APP_CLIENT_SECRET
-scopes = user:email
+scopes = user:email,read:org
 auth_url = https://github.com/login/oauth/authorize
 token_url = https://github.com/login/oauth/access_token
 api_url = https://api.github.com/user
@@ -387,6 +392,7 @@ scopes = user:email,read:org
 team_ids = 150,300
 auth_url = https://github.com/login/oauth/authorize
 token_url = https://github.com/login/oauth/access_token
+api_url = https://api.github.com/user
 allow_sign_up = true
 ```
 
@@ -405,6 +411,7 @@ client_secret = YOUR_GITHUB_APP_CLIENT_SECRET
 scopes = user:email,read:org
 auth_url = https://github.com/login/oauth/authorize
 token_url = https://github.com/login/oauth/access_token
+api_url = https://api.github.com/user
 allow_sign_up = true
 # space-delimited organization names
 allowed_organizations = github google
@@ -671,31 +678,6 @@ session provider you have configured.
 - **memcache:** ex:  127.0.0.1:11211
 - **redis:** ex: `addr=127.0.0.1:6379,pool_size=100,prefix=grafana`
 
-If you use MySQL or Postgres as the session store you need to create the
-session table manually.
-
-Mysql Example:
-
-```bash
-CREATE TABLE `session` (
-    `key`       CHAR(16) NOT NULL,
-    `data`      BLOB,
-    `expiry`    INT(11) UNSIGNED NOT NULL,
-    PRIMARY KEY (`key`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-```
-
-Postgres Example:
-
-```bash
-CREATE TABLE session (
-    key       CHAR(16) NOT NULL,
-    data      BYTEA,
-    expiry    INTEGER NOT NULL,
-    PRIMARY KEY (key)
-);
-```
-
 Postgres valid `sslmode` are `disable`, `require`, `verify-ca`, and `verify-full` (default).
 
 ### cookie_name
@@ -820,11 +802,8 @@ Set root url to a Grafana instance where you want to publish external snapshots 
 ### external_snapshot_name
 Set name for external snapshot button. Defaults to `Publish to snapshot.raintank.io`
 
-### remove expired snapshot
+### snapshot_remove_expired
 Enabled to automatically remove expired snapshots
-
-### remove snapshots after 90 days
-Time to live for snapshots.
 
 ## [external_image_storage]
 These options control how images should be made public so they can be shared on services like slack.
@@ -902,7 +881,5 @@ Container name where to store "Blob" images with random names. Creating the blob
 Defaults to true. Set to false to disable alerting engine and hide Alerting from UI.
 
 ### execute_alerts
-
-### execute_alerts = true
 
 Makes it possible to turn off alert rule execution.

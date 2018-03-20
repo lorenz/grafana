@@ -4,6 +4,7 @@ import { PanelModel } from '../panel_model';
 import { PanelContainer } from './PanelContainer';
 import templateSrv from 'app/features/templating/template_srv';
 import appEvents from 'app/core/app_events';
+import config from 'app/core/config';
 
 export interface DashboardRowProps {
   panel: PanelModel;
@@ -27,6 +28,7 @@ export class DashboardRow extends React.Component<DashboardRowProps, any> {
     this.toggle = this.toggle.bind(this);
     this.openSettings = this.openSettings.bind(this);
     this.delete = this.delete.bind(this);
+    this.update = this.update.bind(this);
   }
 
   toggle() {
@@ -37,13 +39,18 @@ export class DashboardRow extends React.Component<DashboardRowProps, any> {
     });
   }
 
+  update() {
+    this.dashboard.processRepeats();
+    this.forceUpdate();
+  }
+
   openSettings() {
     appEvents.emit('show-modal', {
       templateHtml: `<row-options row="model.row" on-updated="model.onUpdated()" dismiss="dismiss()"></row-options>`,
       modalClass: 'modal--narrow',
       model: {
         row: this.props.panel,
-        onUpdated: this.forceUpdate.bind(this),
+        onUpdated: this.update.bind(this),
       },
     });
   }
@@ -88,14 +95,16 @@ export class DashboardRow extends React.Component<DashboardRowProps, any> {
           {title}
           <span className="dashboard-row__panel_count">({hiddenPanels} hidden panels)</span>
         </a>
-        <div className="dashboard-row__actions">
-          <a className="pointer" onClick={this.openSettings}>
-            <i className="fa fa-cog" />
-          </a>
-          <a className="pointer" onClick={this.delete}>
-            <i className="fa fa-trash" />
-          </a>
-        </div>
+        {config.bootData.user.orgRole !== 'Viewer' && (
+          <div className="dashboard-row__actions">
+            <a className="pointer" onClick={this.openSettings}>
+              <i className="fa fa-cog" />
+            </a>
+            <a className="pointer" onClick={this.delete}>
+              <i className="fa fa-trash" />
+            </a>
+          </div>
+        )}
         <div className="dashboard-row__drag grid-drag-handle" />
       </div>
     );

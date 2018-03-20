@@ -23,11 +23,13 @@ export function queryPartEditorDirective($compile, templateSrv) {
     scope: {
       part: '=',
       handleEvent: '&',
+      debounce: '@',
     },
     link: function postLink($scope, elem) {
       var part = $scope.part;
       var partDef = part.def;
       var $paramsContainer = elem.find('.query-part-parameters');
+      var debounceLookup = $scope.debounce;
 
       $scope.partActions = [];
 
@@ -123,11 +125,15 @@ export function queryPartEditorDirective($compile, templateSrv) {
         });
 
         var typeahead = $input.data('typeahead');
-        typeahead.lookup = _.debounce(function() {
+        typeahead.lookup = function() {
           this.query = this.$element.val() || '';
           var items = this.source(this.query, $.proxy(this.process, this));
           return items ? this.process(items) : items;
-        }, 500);
+        };
+
+        if (debounceLookup) {
+          typeahead.lookup = _.debounce(typeahead.lookup, 500, { leading: true });
+        }
       }
 
       $scope.showActionsMenu = function() {

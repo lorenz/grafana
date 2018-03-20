@@ -74,6 +74,14 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "github.com/denisenkom/go-mssqldb"
+  packages = [
+    ".",
+    "internal/cp"
+  ]
+  revision = "270bc3860bb94dd3a3ffd047377d746c5e276726"
+
+[[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
   revision = "570b54cabe6b8eb0bc2dfce68d964677d63b5260"
@@ -112,7 +120,12 @@
 [[projects]]
   branch = "master"
   name = "github.com/go-macaron/session"
-  packages = [".","memcache","mysql","postgres","redis"]
+  packages = [
+    ".",
+    "memcache",
+    "postgres",
+    "redis"
+  ]
   revision = "b8e286a0dba8f4999042d6b258daf51b31d08938"
 
 [[projects]]
@@ -135,12 +148,14 @@
 [[projects]]
   name = "github.com/go-xorm/core"
   packages = ["."]
-  revision = "e8409d73255791843585964791443dbad877058c"
+  revision = "da1adaf7a28ca792961721a34e6e04945200c890"
+  version = "v0.5.7"
 
 [[projects]]
   name = "github.com/go-xorm/xorm"
   packages = ["."]
-  revision = "6687a2b4e824f4d87f2d65060ec5cb0d896dff1e"
+  revision = "1933dd69e294c0a26c0266637067f24dbb25770c"
+  version = "v0.6.4"
 
 [[projects]]
   branch = "master"
@@ -345,6 +360,12 @@
   version = "1.6.3"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/teris-io/shortid"
+  packages = ["."]
+  revision = "771a37caa5cf0c81f585d7b6df4dfc77e0615b5c"
+
+[[projects]]
   name = "github.com/uber/jaeger-client-go"
   packages = [".","config","internal/baggage","internal/baggage/remote","internal/spanlog","log","rpcmetrics","thrift-gen/agent","thrift-gen/baggage","thrift-gen/jaeger","thrift-gen/sampling","thrift-gen/zipkincore","utils"]
   revision = "3ac96c6e679cb60a74589b0d0aa7c70a906183f7"
@@ -371,7 +392,10 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["pbkdf2"]
+  packages = [
+    "md4",
+    "pbkdf2"
+  ]
   revision = "3d37316aaa6bd9929127ac9a527abf408178ea7b"
 
 [[projects]]
@@ -473,6 +497,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "566ffaf1cf24b6d01c0fb158df7910e1f315dad17c28664a7930708d37175675"
+  inputs-digest = "8a9e651fb8ea49dfd3c6ddc99bd3242b39e453ea9edd11321da79bd2c865e9d1"
   solver-name = "gps-cdcl"
   solver-version = 1
